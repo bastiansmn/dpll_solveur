@@ -77,8 +77,36 @@ let unitaire clauses =
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
 let pur clauses =
-  (* à compléter *)
-  0
+	let rec flatten list = 
+		match list with 
+		| [] -> []
+		| e::l -> e @ flatten(l)
+	in let rec is_pur list = 
+		match list with 
+		| [] -> raise (Failure "pas de littéral pur")
+		| e::l -> let rec parcours lst = 
+						match lst with
+						| [] -> Some(e)
+						| x::r -> if e <> x && abs(e) = abs(x) then None
+										else parcours(r)
+					in match parcours(flatten clauses) with
+					 	| None -> is_pur(l)
+						| Some(x) -> x
+	in is_pur(flatten clauses);;
+	(* 
+	in let flat_clauses = flatten clauses
+	in let len = List.length(flat_clauses)
+ 	in let hash_tbl = Hashtbl.create len
+	in let rec compute_occur list =
+		match list with 
+		| [] -> hash_tbl
+		| e::r -> try (let occ = Hashtbl.find(hash_tbl)(e) 
+							in let _ = Hashtbl.replace(hash_tbl)(e)(occ+1) in compute_occur(r))
+					 with Not_found -> let _ = Hashtbl.add(hash_tbl)(e)(1) in compute_occur(r)
+	// Ce code ne fonctionne pas
+	TODO : Parcourir flat_clauses et mapper les x (ou -x) sur hash_tbl[x] avec hash_tbl[x] = occur(x) (donc le nombre d'occurence des toutes les valeurs absolues des littréraux)
+	TODO : Parcourir la Hashtbl et vérifier si il existe un x tq occur(x) = 1 si oui, alors pur, sinon not(pur)
+	*)		
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
