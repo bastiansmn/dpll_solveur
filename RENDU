@@ -30,11 +30,14 @@ Questions sur votre code
    - Si non, expliquez en quelques phrases en français comment
      fonctionne votre implémentation de `simplifie`.
 
-**à remplir**
+La fonction `filter_map` n'a pas été utilisée. A la place, une fonction auxiliaire et des fonctions de la bibliothèque `List` furent implémentées dans `simplifie`.
+La fonction traverse les clauses une par une et reconstruit la liste. Si on retrouve dans une clause le littéral i via `List.mem`, la clause est remplacée par une liste vide. En revanche, si on retrouve la négation de ce littéral dans la clause, on retire l'élement de la liste.
+
+On retraverse la liste une dernière fois et on retire les listes vides qui restent via `remove_empty_list`.
 
 ---
 
-2. Pour l'implémentation de `unitaire`, quelles sont les fonctions
+1. Pour l'implémentation de `unitaire`, quelles sont les fonctions
    auxiliaires que vous avez utilisées et/ou écrites ? (Par une
    fonction auxiliaire, on entend ici soit une fonction d'une
    bibliothèque, par exemple des fonctions comme `List.length`,
