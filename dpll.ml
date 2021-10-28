@@ -41,7 +41,8 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
 let rec simplifie i clauses =
   let rec simplifie_aux i clause = match clause with
     | [] -> []
-    | n::r -> if n = i then simplifie_aux i r else (n::(simplifie_aux i r))
+    | n::r -> if n = i then [] else
+    if i = (-n) then simplifie_aux i r else (n::(simplifie_aux i r)) 
   in match clauses with
   | [] -> []
   | l::r -> ((simplifie_aux i l)::(simplifie i r));;
