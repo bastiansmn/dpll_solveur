@@ -8,9 +8,9 @@ Date limite: 29 octobre 2021, 23h59
 
 Identité
 --------
-Nombre de binôme: **à remplir**
-Nom, prénom 1: **à remplir**
-Nom, prénom 2: **à remplir**
+Nombre de binôme: 47
+Nom, prénom 1: SEDDIKI Bilal
+Nom, prénom 2: SOMON Bastian
 
 
 Questions sur votre code
@@ -52,7 +52,15 @@ Questions sur votre code
    quelques phrases en français comment ces fonctions auxiliaires sont
    utilisées dans votre implémentation de la fonction `pur`.
 
-**à remplir**
+Nous avons utilisé la fonction auxiliaire `flatten` qui permet de linéariser les clauses données (c'est à dire de rendre la int list list -> int list).
+Cette fonction s'exécute en temps linéaire en le nombre de littéraux totaux.
+Ensuite nous avons écrit une fonction `is_pur` parcourant toute la liste linéarisé, telle que on regarde si le littéral x courant existe sous la forme -x, alors renvoie None (pas de littéral), et si on arrive à la fin de la liste sans qu'il n'existe x et -x, alors renvoie Some(x).
+Dès lors il suffit d'appeler `is_pur (flatten clauses)`.
+
+Cette implémentation a un coût quadratique.
+
+Il est possible de réaliser cette fonction en temps linéaire grâce aux Hashtbl de Ocaml. On parcours la liste renvoyée par `flatten clauses` pour mapper dans la table (de même longueur que la liste) chaque littéraux avec son nombre d'occurence. Cette opération peut se faire en temps linéaire. Puis on parcours la Hashtbl (où il n'y aura pas eu de collision par construction) pour voir si il existe un x tq h(x) >= 1 et h(-x) = 0. Ceci ce fait en temps au pire linéaire.
+Donc on aura bien un algorithme en temps linéaire. Le problème étant que cette solution était trop compliqué à implémenter dans un langage récent pour nous comme Ocaml.
 
 ---
 

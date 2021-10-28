@@ -77,8 +77,22 @@ let unitaire clauses =
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
 let pur clauses =
-  (* à compléter *)
-  0
+   let rec flatten list = 
+      match list with 
+      | [] -> []
+      | e::l -> e @ flatten(l)
+   in let rec is_pur list = 
+      match list with 
+      | [] -> raise (Failure "pas de littéral pur")
+      | e::l -> let rec parcours lst = 
+            match lst with
+               | [] -> Some(e)
+               | x::r -> if e <> x && abs(e) = abs(x) then None
+                           else parcours(r)
+            in match parcours(flatten clauses) with
+               | None -> is_pur(l)
+               | Some(x) -> x
+   in is_pur(flatten clauses);;
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
