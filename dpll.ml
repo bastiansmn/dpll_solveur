@@ -41,18 +41,19 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
 let simplifie i clauses = 
   let simpl_clause i clause =
     match clause with 
-      | [] -> []
-      | _ -> if List.mem(i)(clause) then []
-            else List.filter(fun x -> x != -i)(clause)
+      | [] -> Some([])
+      | _ -> if List.mem(i)(clause) then None
+            else Some(List.filter(fun x -> x != -i)(clause))
   in let rec simpl i cla =
     match cla with 
       | [] -> []
       | e::l -> (simpl_clause(i)(e))::(simpl(i)(l))
-  in let rec remove_empty_list list = 
+  in let rec clean list = 
     match list with 
-      | l::r -> if List.length l != 0 then (l::remove_empty_list r) else remove_empty_list r
-      | [] -> []
-  in remove_empty_list (simpl(i)(clauses));;
+	 	| [] -> []
+	 	| None::r -> clean r
+      | Some(l)::r -> l :: clean r  
+  in clean (simpl(i)(clauses));;
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -112,7 +113,7 @@ let pur clauses =
 
 let simpl_unit clauses =
 	let err = try Some(unitaire clauses)
-				 with Failure(_) -> None
+				 with Not_found -> None
 	in match err with 
 		| None -> clauses
 		| Some(l) -> simplifie(l)(clauses);;
@@ -126,16 +127,14 @@ let simpl_pur clauses =
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-	if List.mem [] clauses then None
-	else if clauses = [] then Some(interpretation)
-	else 
-		let clauses = simpl_unit(clauses)
-		in let clauses = simpl_pur(clauses)
-		in let l = hd(hd clauses)
-			in let res = solveur_dpll_rec(clauses)(l::interpretation)
-			in match res with 
-				| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
-				| _ -> res
+	let clauses = simpl_pur(simpl_unit(clauses))
+	in if clauses = [] then Some(interpretation)
+		else if mem [] clauses then None
+		else let l = hd(hd clauses)
+				in let res = solveur_dpll_rec(clauses)(l::interpretation)
+				in match res with 
+					| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
+					| _ -> res
 ;;
 
 (* tests *)
