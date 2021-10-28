@@ -70,10 +70,10 @@ let rec solveur_split clauses interpretation =
     - sinon, lève une exception `Not_found' *)
 let rec unitaire clauses =
   let get_litt clause = match clause with (* permet de récupérer le littéral dans la clause unitaire *)
-    | [] -> failwith "Error"
+    | [] -> raise (Failure "Clause vide")
     | n::r -> n
   in match clauses with
-  | [] -> failwith "Not_found"
+  | [] -> raise Not_found
   | l::r -> if List.length l = 1 then get_litt l else unitaire r;;
     
 (* pur : int list list -> int
