@@ -31,6 +31,7 @@ Questions sur votre code
      fonctionne votre implémentation de `simplifie`.
 
 **à remplir**
+La fonction 'filter_map' n'a pas été utilisé, à la place une fonction auxiliaire a été écrite à l'intérieur de 'simplifie'. Cette dernière est appliquée à chaque clause de la liste. Elle traverse celle-ci, et la recrée, en omettant le littéral i.
 
 ---
 
