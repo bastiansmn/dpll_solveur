@@ -68,9 +68,13 @@ let rec solveur_split clauses interpretation =
     - si `clauses' contient au moins une clause unitaire, retourne
       le littéral de cette clause unitaire ;
     - sinon, lève une exception `Not_found' *)
-let unitaire clauses =
-  (* à compléter *)
-  0
+let rec unitaire clauses =
+  let get_litt clause = match clause with (* permet de récupérer le littéral dans la clause unitaire *)
+    | [] -> raise (Failure "Clause vide")
+    | n::r -> n
+  in match clauses with
+  | [] -> raise Not_found
+  | l::r -> if List.length l = 1 then get_litt l else unitaire r;;
     
 (* pur : int list list -> int
     - si `clauses' contient au moins un littéral pur, retourne
