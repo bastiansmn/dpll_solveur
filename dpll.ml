@@ -127,14 +127,17 @@ let simpl_pur clauses =
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-	let clauses = simpl_pur(simpl_unit(clauses))
-	in if clauses = [] then Some(interpretation)
-		else if mem [] clauses then None
-		else let l = hd(hd clauses)
-				in let res = solveur_dpll_rec(clauses)(l::interpretation)
-				in match res with 
-					| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
-					| _ -> res
+	if clauses = [] then Some(interpretation)
+	else if mem [] clauses then None
+	else
+		let clauses = simpl_pur(simpl_unit(clauses))
+		in if clauses = [] then Some(interpretation)
+			else if mem [] clauses then None
+			else let l = hd(hd clauses)
+					in let res = solveur_dpll_rec(clauses)(l::interpretation)
+					in match res with 
+						| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
+						| _ -> res
 ;;
 
 (* tests *)
