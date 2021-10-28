@@ -47,7 +47,7 @@ Pour l'implémentation de `unitaire`, une fonction `get_litt` a été écrite, q
 
 ---
 
-1. Pour l'implémentation de `pur`, quelles sont les fonctions
+3. Pour l'implémentation de `pur`, quelles sont les fonctions
    auxiliaires que vous avez utilisées et/ou écrites ?  Expliquez en
    quelques phrases en français comment ces fonctions auxiliaires sont
    utilisées dans votre implémentation de la fonction `pur`.
