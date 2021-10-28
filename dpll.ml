@@ -110,10 +110,33 @@ let pur clauses =
                | Some(x) -> x
    in is_pur(flatten clauses);;
 
+let simpl_unit clauses =
+	let err = try Some(unitaire clauses)
+				 with Failure(_) -> None
+	in match err with 
+		| None -> clauses
+		| Some(l) -> simplifie(l)(clauses);;
+
+let simpl_pur clauses =
+	let err = try Some(pur clauses)
+				 with Failure(_) -> None
+	in match err with 
+		| None -> clauses
+		| Some(l) -> simplifie(l)(clauses);;
+
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-  (* à compléter *)
-  None
+	if List.mem [] clauses then None
+	else if clauses = [] then Some(interpretation)
+	else 
+		let clauses = simpl_unit(clauses)
+		in let clauses = simpl_pur(clauses)
+		in let l = hd(hd clauses)
+			in let res = solveur_dpll_rec(clauses)(l::interpretation)
+			in match res with 
+				| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
+				| _ -> res
+;;
 
 (* tests *)
 (* let () = print_modele (solveur_dpll_rec systeme []) *)
