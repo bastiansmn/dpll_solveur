@@ -38,14 +38,36 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
 (* simplifie : int -> int list list -> int list list 
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
-let rec simplifie i clauses =
-  let rec simplifie_aux i clause = match clause with
-    | [] -> []
-    | n::r -> if n = i then [] else
-    if i = (-n) then simplifie_aux i r else (n::(simplifie_aux i r)) 
-  in match clauses with
-  | [] -> []
-  | l::r -> ((simplifie_aux i l)::(simplifie i r));;
+(*let simplifie i clauses =
+  let rec simplifie_rec i clauses =
+    let rec simplifie_aux i clause = match clause with
+      | [] -> []
+      | n::r -> if n = i then [] else
+                if i = (-n) then simplifie_aux i r else (n::(simplifie_aux i r))
+    in match clauses with 
+    | l::r -> match l with
+      | [] -> []
+      | n::r -> ((simplifie_aux i l)::(simplifie_rec i r))
+    in let rec remove_empty_list list = match list with 
+      | l::r -> if List.length l != 0 then (l::remove_empty_list r) else remove_empty_list r
+      | [] -> []
+  in remove_empty_list (simplifie_rec i clauses);; *)
+
+let rec remove_empty_list list = match list with 
+  | l::r -> if List.length l != 0 then (l::remove_empty_list r) else remove_empty_list r
+  | [] -> [];;
+
+let simplifie i clauses = 
+  let simpl_clause i clause =
+    match clause with 
+      | [] -> []
+      | _ -> if List.mem(i)(clause) then []
+            else List.filter(fun x -> x != -i)(clause)
+  in let rec simpl i cla =
+    match cla with 
+      | [] -> []
+      | e::l -> (simpl_clause(i)(e))::(simpl(i)(l))
+  in remove_empty_list (simpl(i)(clauses));;
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
