@@ -93,20 +93,6 @@ let pur clauses =
 					 	| None -> is_pur(l)
 						| Some(x) -> x
 	in is_pur(flatten clauses);;
-	(* 
-	in let flat_clauses = flatten clauses
-	in let len = List.length(flat_clauses)
- 	in let hash_tbl = Hashtbl.create len
-	in let rec compute_occur list =
-		match list with 
-		| [] -> hash_tbl
-		| e::r -> try (let occ = Hashtbl.find(hash_tbl)(e) 
-							in let _ = Hashtbl.replace(hash_tbl)(e)(occ+1) in compute_occur(r))
-					 with Not_found -> let _ = Hashtbl.add(hash_tbl)(e)(1) in compute_occur(r)
-	// Ce code ne fonctionne pas
-	TODO : Parcourir flat_clauses et mapper les x (ou -x) sur hash_tbl[x] avec hash_tbl[x] = occur(x) (donc le nombre d'occurence des toutes les valeurs absolues des littréraux)
-	TODO : Parcourir la Hashtbl et vérifier si il existe un x tq occur(x) = 1 si oui, alors pur, sinon not(pur)
-	*)		
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
