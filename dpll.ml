@@ -39,20 +39,21 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses = 
-  let simplifie_aux i clause =
-    match clause with 
-      | [] -> Some([])
-      | _ -> if List.mem(i)(clause) then None else Some(List.filter(fun x -> x != -i)(clause))
-  in let rec simplifie_rec i clauses =
-    match clauses with 
+  	let simpl_clause i clause =
+   	match clause with
+	 	| [] -> Some([])
+   	| _ -> if List.mem(i)(clause) then None
+            else Some(List.filter(fun x -> x != -i)(clause))
+	in let rec simpl i cla =
+    match cla with 
       | [] -> []
-      | e::l -> (simplifie_aux(i)(e))::(simplifie_rec(i)(l))
-  in let rec clean list = 
-    match list with 
-	 	| [] -> []
-	 	| None::r -> clean r
-      | Some(l)::r -> if l != [] then l::clean r else clean r  
-  in clean (simplifie_rec(i)(clauses));;
+      | e::l -> (simpl_clause(i)(e))::(simpl(i)(l))
+	in let rec clean list = 
+		match list with
+		 	| [] -> []
+			| None::r -> clean r
+			| Some(l)::r -> l :: clean r  
+	in clean (simpl(i)(clauses));;
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -71,8 +72,8 @@ let rec solveur_split clauses interpretation =
   | _    -> branche
 
 (* tests *)
-(* let () = print_modele (solveur_split systeme []) *)
-(* let () = print_modele (solveur_split coloriage []) *)
+(* let () = print_modele (solveur_split systeme []) 
+let () = print_modele (solveur_split coloriage []) *)
 
 (* solveur dpll récursif *)
     
@@ -140,12 +141,12 @@ let rec solveur_dpll_rec clauses interpretation =
   let litteral = try Some (unitaire clauses) with
       | Not_found -> None
   in match litteral with 
-  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation)
+  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation) (* simplification unitaire *)
   | None -> let litteral = try Some (pur clauses) with
                           | Failure (_) -> None
   in match litteral with
-  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation)
-  | None -> solveur_split clauses interpretation  
+  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation) (* simplification pur *)
+  | None -> solveur_split clauses interpretation  (* pas de clauses unit, ni de lit pur *)
 ;;
 
 (* tests *)
