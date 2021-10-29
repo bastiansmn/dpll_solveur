@@ -39,21 +39,18 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses = 
-  	let simpl_clause i clause =
+  	let simplifie_clause i clause =
    	match clause with
-	 	| [] -> Some([])
+	 	| [] -> Some(clause)
    	| _ -> if List.mem(i)(clause) then None
             else Some(List.filter(fun x -> x != -i)(clause))
-	in let rec simpl i cla =
+	in let rec simplifie_rec i cla =
     match cla with 
       | [] -> []
-      | e::l -> (simpl_clause(i)(e))::(simpl(i)(l))
-	in let rec clean list = 
-		match list with
-		 	| [] -> []
-			| None::r -> clean r
-			| Some(l)::r -> l :: clean r  
-	in clean (simpl(i)(clauses));;
+      | e::l -> match simplifie_clause(i)(e) with
+        | Some(e) -> e::(simplifie_rec(i)(l))
+        | None -> simplifie_rec(i)(l)
+	in simplifie_rec(i)(clauses);;
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
