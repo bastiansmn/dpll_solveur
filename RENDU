@@ -19,7 +19,10 @@ Questions sur votre code
    et que ensuite `./dpll sudoku-4x4.cnf` donne la réponse attendue (voir
    fichier README) ?
 
-**à remplir**
+Il n'y a ni warnings ni erreurs.
+La réponse retournée est bien :
+SAT
+-111 -112 113 -114 -121 -122 -123 124 -131 132 -133 -134 141 -142 -143 -144 -211 212 -213 -214 221 -222 -223 -224 -231 -232 -233 234 -241 -242 243 -244 311 -312 -313 -314 -321 322 -323 -324 -331 -332 333 -334 -341 -342 -343 344 -411 -412 -413 414 -421 -422 423 -424 431 -432 -433 -434 -441 442 -443 -444 0
 
 ---
 
@@ -37,7 +40,7 @@ On retraverse la liste une dernière fois et on retire les listes vides qui rest
 
 ---
 
-1. Pour l'implémentation de `unitaire`, quelles sont les fonctions
+2. Pour l'implémentation de `unitaire`, quelles sont les fonctions
    auxiliaires que vous avez utilisées et/ou écrites ? (Par une
    fonction auxiliaire, on entend ici soit une fonction d'une
    bibliothèque, par exemple des fonctions comme `List.length`,
@@ -67,17 +70,29 @@ Donc on aura bien un algorithme en temps linéaire. Le problème étant que cett
 
 ---
 
-1. Donnez un exemple d'une formule pour laquelle les deux fonctions
+4. Donnez un exemple d'une formule pour laquelle les deux fonctions
    `solveur_split` et `solveur_dpll_rec` ont un comportement
    différent, et expliquez les différences entre ces deux fonctions.
 
-**à remplir**
+Quand on exécute la commande `time ./dpll_split cnf/sat/sudoku-9x9-easy.cnf` on obtient :
+SAT
+[... INTERPRETATION ...]
+./dpll_split cnf/sat/sudoku-9x9-easy.cnf  1,43s user 0,25s system 99% cpu 1,684 total
+
+Le solveur a rendu une réponse en ~1.50s.
+
+Tandis que si on lance `time ./dpll cnf/sat/sudoku-9x9-easy.cnf` on obtient
+SAT
+[... INTERPRETATION ...]
+./dpll cnf/sat/sudoku-9x9-easy.cnf  0,55s user 0,19s system 99% cpu 0,742 total
+
+La solveur a donc rendu une réponse en ~0.6s ici. La complexité est visiblement meilleure. Ceci est du au fait que `solveur_dpll_rec` va simplifier toujours idéalement mieux que `solveur_split`.
 
 ---
 
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
-**à remplir**
+Aucunes.
 
 ---
 
