@@ -38,18 +38,18 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
 (* simplifie : int -> int list list -> int list list 
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
-let simplifie i clauses = 
-  	let simplifie_clause i clause =
+let simplifie i clauses =
+  let simplifie_clause i clause =
    	match clause with
 	 	| [] -> Some(clause)
    	| _ -> if List.mem(i)(clause) then None
             else Some(List.filter(fun x -> x != -i)(clause))
-	in let rec simplifie_rec i cla =
-    match cla with 
+	in let rec simplifie_rec i clauses =
+    match clauses with 
       | [] -> []
       | e::l -> match simplifie_clause(i)(e) with
-        | Some(e) -> e::(simplifie_rec(i)(l))
-        | None -> simplifie_rec(i)(l)
+        | Some(e) -> e::(simplifie_rec(i)(l)) (* Cas où le littéral i n'est pas dans la clause ou que son négatif y soit *)
+        | None -> simplifie_rec(i)(l) (* Cas où le littéral i est dans la clause *)
 	in simplifie_rec(i)(clauses);;
 
 (* solveur_split : int list list -> int list -> int list option
@@ -81,7 +81,7 @@ let () = print_modele (solveur_split coloriage []) *)
 let rec unitaire clauses = 
   match clauses with
   | [] -> raise Not_found
-  | l::r -> if List.length l = 1 then List.hd(l) else unitaire r;;
+  | l::r -> if List.length l = 1 then List.hd(l) else unitaire r;; (* Liste de taille 1 -> clause unitaire *)
     
 (* pur : int list list -> int
     - si `clauses' contient au moins un littéral pur, retourne
