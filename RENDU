@@ -46,7 +46,7 @@ On retraverse la liste une dernière fois et on retire les listes vides qui rest
    comment ces fonctions auxiliaires sont utilisées dans votre
    implémentation de la fonction `unitaire`.
 
-Pour l'implémentation de `unitaire`, une fonction `get_litt` a été écrite, qui permet de récupérer le premier élement d'une liste. Cela permet d'obtenir le littéral d'une clause unitaire. Pour reconnaitre ces dernières, la fonction `List.length` de la bibliothèque `List` a été utilisé ; si une liste est de taille 1, il s'agit d'une clause unitaire.
+Pour l'implémentation de `unitaire`, les fonctions `hd` et `length` de la bibliothèque `List` furent utilisées. `hd` permet d'obtenir le littéral d'une clause unitaire et `length` de les répérer, en déterminant s'il s'agit une liste de taille 1, donc unitaire.
 
 ---
 
@@ -55,7 +55,7 @@ Pour l'implémentation de `unitaire`, une fonction `get_litt` a été écrite, q
    quelques phrases en français comment ces fonctions auxiliaires sont
    utilisées dans votre implémentation de la fonction `pur`.
 
-Nous avons utilisé la fonction auxiliaire `flatten` qui permet de linéariser les clauses données (c'est à dire de rendre la int list list -> int list).
+Nous avons utilisé la fonction `flatten` de la bibliothèque `List` qui permet de linéariser les clauses données (c'est à dire de rendre la int list list -> int list).
 Cette fonction s'exécute en temps linéaire en le nombre de littéraux totaux.
 Ensuite nous avons écrit une fonction `is_pur` parcourant toute la liste linéarisé, telle que on regarde si le littéral x courant existe sous la forme -x, alors renvoie None (pas de littéral), et si on arrive à la fin de la liste sans qu'il n'existe x et -x, alors renvoie Some(x).
 Dès lors il suffit d'appeler `is_pur (flatten clauses)`.
@@ -67,7 +67,7 @@ Donc on aura bien un algorithme en temps linéaire. Le problème étant que cett
 
 ---
 
-4. Donnez un exemple d'une formule pour laquelle les deux fonctions
+1. Donnez un exemple d'une formule pour laquelle les deux fonctions
    `solveur_split` et `solveur_dpll_rec` ont un comportement
    différent, et expliquez les différences entre ces deux fonctions.
 
