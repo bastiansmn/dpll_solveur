@@ -39,21 +39,20 @@ let coloriage = [[1;2;3];[4;5;6];[7;8;9];[10;11;12];[13;14;15];[16;17;18];[19;20
    applique la simplification de l'ensemble des clauses en mettant
    le littéral i à vrai *)
 let simplifie i clauses = 
-  let simpl_clause i clause =
+  let simplifie_aux i clause =
     match clause with 
       | [] -> Some([])
-      | _ -> if List.mem(i)(clause) then None
-            else Some(List.filter(fun x -> x != -i)(clause))
-  in let rec simpl i cla =
-    match cla with 
+      | _ -> if List.mem(i)(clause) then None else Some(List.filter(fun x -> x != -i)(clause))
+  in let rec simplifie_rec i clauses =
+    match clauses with 
       | [] -> []
-      | e::l -> (simpl_clause(i)(e))::(simpl(i)(l))
+      | e::l -> (simplifie_aux(i)(e))::(simplifie_rec(i)(l))
   in let rec clean list = 
     match list with 
 	 	| [] -> []
 	 	| None::r -> clean r
-      | Some(l)::r -> l :: clean r  
-  in clean (simpl(i)(clauses));;
+      | Some(l)::r -> if l != [] then l::clean r else clean r  
+  in clean (simplifie_rec(i)(clauses));;
 
 (* solveur_split : int list list -> int list -> int list option
    exemple d'utilisation de `simplifie' *)
@@ -81,24 +80,17 @@ let rec solveur_split clauses interpretation =
     - si `clauses' contient au moins une clause unitaire, retourne
       le littéral de cette clause unitaire ;
     - sinon, lève une exception `Not_found' *)
-let rec unitaire clauses =
-  let get_litt clause = match clause with (* permet de récupérer le littéral dans la clause unitaire *)
-    | [] -> raise (Failure "Clause vide")
-    | n::r -> n
-  in match clauses with
+let rec unitaire clauses = 
+  match clauses with
   | [] -> raise Not_found
-  | l::r -> if List.length l = 1 then get_litt l else unitaire r;;
+  | l::r -> if List.length l = 1 then List.hd(l) else unitaire r;;
     
 (* pur : int list list -> int
     - si `clauses' contient au moins un littéral pur, retourne
       ce littéral ;
     - sinon, lève une exception `Failure "pas de littéral pur"' *)
 let pur clauses =
-   let rec flatten list = 
-      match list with 
-      | [] -> []
-      | e::l -> e @ flatten(l)
-   in let rec is_pur list = 
+   let rec is_pur list = 
       match list with 
       | [] -> raise (Failure "pas de littéral pur")
       | e::l -> let rec parcours lst = 
@@ -106,10 +98,10 @@ let pur clauses =
                | [] -> Some(e)
                | x::r -> if e <> x && abs(e) = abs(x) then None
                            else parcours(r)
-            in match parcours(flatten clauses) with
+            in match parcours(List.flatten clauses) with
                | None -> is_pur(l)
                | Some(x) -> x
-   in is_pur(flatten clauses);;
+   in is_pur(List.flatten clauses);;
 
 let simpl_unit clauses =
 	let err = try Some(unitaire clauses)
@@ -127,22 +119,25 @@ let simpl_pur clauses =
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
 let rec solveur_dpll_rec clauses interpretation =
-	if clauses = [] then Some(interpretation)
-	else if mem [] clauses then None
-	else
-		let clauses = simpl_pur(simpl_unit(clauses))
-		in if clauses = [] then Some(interpretation)
-			else if mem [] clauses then None
-			else let l = hd(hd clauses)
-					in let res = solveur_dpll_rec(clauses)(l::interpretation)
-					in match res with 
-						| None -> solveur_dpll_rec(clauses)((-l)::interpretation)
-						| _ -> res
+  if clauses = [] then Some interpretation else
+  (* un clause vide est insatisfiable *)
+  if mem [] clauses then None else
+  let litteral = try Some (pur clauses) with
+      | Failure(_) -> try Some (unitaire clauses) with
+                      | Not_found -> None
+  in let clauses_simplifiees = match litteral with
+    | None -> clauses
+    | Some(litteral) -> simplifie litteral clauses
+  in if litteral = None
+    then solveur_split clauses interpretation
+    else match litteral with
+    | Some(litteral) -> solveur_dpll_rec clauses_simplifiees (litteral::interpretation)
+    | None -> None
 ;;
 
 (* tests *)
-(* let () = print_modele (solveur_dpll_rec systeme []) *)
-(* let () = print_modele (solveur_dpll_rec coloriage []) *)
+(* let () = print_modele (solveur_dpll_rec systeme [])
+let () = print_modele (solveur_dpll_rec coloriage []) *)
 
 let () =
   let clauses = Dimacs.parse Sys.argv.(1) in
