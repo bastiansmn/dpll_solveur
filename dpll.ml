@@ -136,17 +136,17 @@ let simpl_pur clauses =
 ;;*)
 
 let rec solveur_dpll_rec clauses interpretation =
+  (* Pré-tests *)
   if clauses = [] then Some interpretation else
   if mem [] clauses then None else
+  (* Définition de litteral *)
   let litteral = try Some (unitaire clauses) with
-      | Not_found -> None
-  in match litteral with 
-  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation) (* simplification unitaire *)
-  | None -> let litteral = try Some (pur clauses) with
-                          | Failure (_) -> None
+    | Not_found -> try Some (pur clauses) with
+      | Failure (_) -> None
+  (* Récursion si littéral pur ou unitaire trouvé, sinon split *)
   in match litteral with
-  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation) (* simplification pur *)
-  | None -> solveur_split clauses interpretation  (* pas de clauses unit, ni de lit pur *)
+    | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation) 
+    | None -> solveur_split clauses interpretation
 ;;
 
 (* tests *)
