@@ -118,13 +118,12 @@ let simpl_pur clauses =
 		| Some(l) -> simplifie(l)(clauses);;
 
 (* solveur_dpll_rec : int list list -> int list -> int list option *)
-let rec solveur_dpll_rec clauses interpretation =
+(*let rec solveur_dpll_rec clauses interpretation =
   if clauses = [] then Some interpretation else
-  (* un clause vide est insatisfiable *)
   if mem [] clauses then None else
-  let litteral = try Some (pur clauses) with
-      | Failure(_) -> try Some (unitaire clauses) with
-                      | Not_found -> None
+  let litteral = try Some (unitaire clauses) with
+      | Not_found -> try Some (pur clauses) with
+                      | Failure(_) -> None
   in let clauses_simplifiees = match litteral with
     | None -> clauses
     | Some(litteral) -> simplifie litteral clauses
@@ -133,6 +132,20 @@ let rec solveur_dpll_rec clauses interpretation =
     else match litteral with
     | Some(litteral) -> solveur_dpll_rec clauses_simplifiees (litteral::interpretation)
     | None -> None
+;;*)
+
+let rec solveur_dpll_rec clauses interpretation =
+  if clauses = [] then Some interpretation else
+  if mem [] clauses then None else
+  let litteral = try Some (unitaire clauses) with
+      | Not_found -> None
+  in match litteral with 
+  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation)
+  | None -> let litteral = try Some (pur clauses) with
+                          | Failure (_) -> None
+  in match litteral with
+  | Some(e) -> solveur_dpll_rec (simplifie e clauses) (e::interpretation)
+  | None -> solveur_split clauses interpretation  
 ;;
 
 (* tests *)
