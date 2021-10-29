@@ -104,37 +104,6 @@ let pur clauses =
                | Some(x) -> x
    in is_pur(List.flatten clauses);;
 
-let simpl_unit clauses =
-	let err = try Some(unitaire clauses)
-				 with Not_found -> None
-	in match err with 
-		| None -> clauses
-		| Some(l) -> simplifie(l)(clauses);;
-
-let simpl_pur clauses =
-	let err = try Some(pur clauses)
-				 with Failure(_) -> None
-	in match err with 
-		| None -> clauses
-		| Some(l) -> simplifie(l)(clauses);;
-
-(* solveur_dpll_rec : int list list -> int list -> int list option *)
-(*let rec solveur_dpll_rec clauses interpretation =
-  if clauses = [] then Some interpretation else
-  if mem [] clauses then None else
-  let litteral = try Some (unitaire clauses) with
-      | Not_found -> try Some (pur clauses) with
-                      | Failure(_) -> None
-  in let clauses_simplifiees = match litteral with
-    | None -> clauses
-    | Some(litteral) -> simplifie litteral clauses
-  in if litteral = None
-    then solveur_split clauses interpretation
-    else match litteral with
-    | Some(litteral) -> solveur_dpll_rec clauses_simplifiees (litteral::interpretation)
-    | None -> None
-;;*)
-
 let rec solveur_dpll_rec clauses interpretation =
   (* Pré-tests *)
   if clauses = [] then Some interpretation else
